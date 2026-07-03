@@ -14,20 +14,20 @@ Firebase 기반 개인용 아카이브 저장소입니다.
 ## 시작 전 준비
 1. Firebase 프로젝트를 생성합니다.
 2. Web App을 추가하고 Firebase config 값을 확인합니다.
-3. `.env.example`을 기준으로 `.env.local`을 생성하고 `VITE_ARCHIVE_PIN`을 설정합니다.
+3. `config\.env.example`을 기준으로 `.env.local`을 생성하고 `VITE_ARCHIVE_PIN`을 설정합니다.
 4. Cloud Firestore, Firebase Storage를 활성화합니다.
 
 ## 실행
 간단 실행:
 
 ```powershell
-start.cmd
+scripts\start.cmd
 ```
 
 종료:
 
 ```powershell
-end.cmd
+scripts\end.cmd
 ```
 
 개별 실행:
@@ -68,7 +68,7 @@ auth=trust
 - 로컬 API 헬스체크: `GET /api/health`
 - 파일 목록: `GET /api/files`
 - 파일 업로드: `POST /api/files` multipart `file`
-- 시작/종료 스크립트: `start.cmd`, `end.cmd`
+- 시작/종료 스크립트: `scripts\start.cmd`, `scripts\end.cmd`
 
 ## 주요 문서
 - `docs/requirements/개인용_아카이브_저장소_기능검토보고서.md`

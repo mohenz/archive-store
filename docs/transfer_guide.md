@@ -19,7 +19,7 @@
 git clone https://github.com/mohenz/archive-store.git
 cd archive-store
 npm install
-Copy-Item .env.example .env.local
+Copy-Item config\.env.example .env.local
 ```
 
 `.env.local`에 최소값을 설정합니다.
@@ -33,13 +33,13 @@ VITE_LOCAL_API_URL=http://127.0.0.1:5175
 로컬 실행:
 
 ```powershell
-start.cmd
+scripts\start.cmd
 ```
 
 종료:
 
 ```powershell
-end.cmd
+scripts\end.cmd
 ```
 
 ## 접속 정보

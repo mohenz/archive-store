@@ -4,13 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "start": "scripts/start.cmd",
+    "stop": "scripts/end.cmd",
+    "dev": "vite --config config/vite.config.js",
     "dev:api": "node server/local-api.js",
     "db:start": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/start-local-db.ps1",
     "db:stop": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/stop-local-db.ps1",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check:syntax": "node --check vite.config.js && node --check server/local-api.js"
+    "build": "vite build --config config/vite.config.js",
+    "preview": "vite preview --config config/vite.config.js",
+    "check:syntax": "node --check config/vite.config.js && node --check server/local-api.js"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

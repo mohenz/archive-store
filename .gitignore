@@ -1,6 +1,6 @@
 node_modules/
 dist/
-local/postgres-data/
+local/postgres-data*/
 local/uploads/
 local/*.log
 docs/required_user_inputs.md
