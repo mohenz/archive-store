@@ -1,0 +1,27 @@
+{
+  "name": "archive-store",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:api": "node server/local-api.js",
+    "db:start": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/start-local-db.ps1",
+    "db:stop": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/stop-local-db.ps1",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check:syntax": "node --check vite.config.js && node --check server/local-api.js"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "firebase": "^11.1.0",
+    "lucide-react": "^0.468.0",
+    "multer": "^2.2.0",
+    "pg": "^8.13.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "vite": "^6.0.7"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "project": {
+    "title": "디자인 작업 명세 처리",
+    "id": "3657601612466408108"
+  },
+  "screens": [
+    {
+      "name": "Design System",
+      "id": "asset-stub-assets_34fe84e586a74e45a1fb0291e1c61500",
+      "exports": {
+        "images": [],
+        "code": []
+      },
+      "status": "pending_mcp_auth"
+    }
+  ],
+  "download": {
+    "tool": "curl.exe",
+    "flags": ["-L"],
+    "last_attempt": "2026-07-03",
+    "last_result": "blocked: Stitch MCP Auth required"
+  }
+}
+

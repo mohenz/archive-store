@@ -1,0 +1,10 @@
+node_modules/
+dist/
+local/postgres-data/
+local/uploads/
+local/*.log
+docs/required_user_inputs.md
+.env
+.env.local
+.env.*.local
+*.log
