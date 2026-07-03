@@ -75,7 +75,7 @@ auth=trust
 - `docs/requirements/프로젝트_아키텍처_및_개발계획서.md`
 - `docs/requirements/디자인_작업_명세서_Stitch.md`
 - `docs/firebase_setup.md`
-- `docs/required_user_inputs.md`
+- `docs/transfer_guide.md`
 
 ## 배포 방향
 - Firebase Hosting은 사용하지 않습니다.
