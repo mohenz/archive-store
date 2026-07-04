@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { isFirebaseConfigured } from '../../firebase/client.js';
 import { fetchLocalFiles } from './localArchiveApi.js';
 import { subscribeFiles } from './archiveService.js';
+import { getEnv } from '../../core/env.js';
 
 const sampleFiles = [
   {
@@ -31,7 +32,8 @@ const sampleFiles = [
 ];
 
 export function useArchiveFiles(userId) {
-  const dataBackend = import.meta.env.VITE_DATA_BACKEND || 'local-api';
+  const rawBackend = getEnv('VITE_DATA_BACKEND') || 'local-api';
+  const dataBackend = String(rawBackend).trim().replace(/^\uFEFF/g, '');
   const [files, setFiles] = useState(sampleFiles);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(dataBackend === 'firebase' ? isFirebaseConfigured : true);

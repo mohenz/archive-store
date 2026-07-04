@@ -1,5 +1,7 @@
+import { getEnv } from '../core/env.js';
+
 export const archivePolicy = {
-  pin: import.meta.env.VITE_ARCHIVE_PIN || '',
+  pin: getEnv('VITE_ARCHIVE_PIN') || '',
   userId: 'single-user',
   maxFileBytes: 200 * 1024 * 1024,
   storageLimitBytes: 1 * 1024 * 1024 * 1024,

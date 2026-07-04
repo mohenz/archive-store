@@ -8,6 +8,7 @@ import { deleteArchiveFile, uploadArchiveFile } from '../features/archive/archiv
 import { deleteLocalFile, uploadLocalFile } from '../features/archive/localArchiveApi.js';
 import { useArchiveFiles } from '../features/archive/useArchiveFiles.js';
 import { auth, isFirebaseConfigured } from '../firebase/client.js';
+import { getEnv } from '../core/env.js';
 import { FilePreviewModal } from '../views/FilePreviewModal.jsx';
 
 const categories = [
@@ -55,7 +56,7 @@ function getDeleteErrorMessage(error) {
 }
 
 export function ArchiveView() {
-  const rawBackend = import.meta.env.VITE_DATA_BACKEND || 'local-api';
+  const rawBackend = getEnv('VITE_DATA_BACKEND') || 'local-api';
   const dataBackend = String(rawBackend).trim().replace(/^\uFEFF/g, '');
   const isFirebaseBackend = dataBackend === 'firebase';
   const [authUser, setAuthUser] = useState(null);

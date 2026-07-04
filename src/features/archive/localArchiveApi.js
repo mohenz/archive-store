@@ -1,4 +1,6 @@
-const apiBaseUrl = import.meta.env.VITE_LOCAL_API_URL || 'http://127.0.0.1:5175';
+import { getEnv } from '../../core/env.js';
+
+const apiBaseUrl = getEnv('VITE_LOCAL_API_URL') || 'http://127.0.0.1:5175';
 
 export async function fetchLocalFiles() {
   const response = await fetch(`${apiBaseUrl}/api/files`);
