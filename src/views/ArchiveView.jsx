@@ -1,6 +1,6 @@
 import { File, FileQuestion, FileText, Grid2X2, Image, Layers, LogOut, Search, Trash2, UploadCloud } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { archivePolicy } from '../config/archivePolicy.js';
 import { validateArchiveFiles } from '../core/fileValidation.js';
 import { formatBytes, getFileInitial } from '../core/fileTypes.js';
@@ -62,8 +62,16 @@ export function ArchiveView() {
   const [authLoading, setAuthLoading] = useState(isFirebaseBackend && isFirebaseConfigured);
   const userId = isFirebaseBackend ? authUser?.uid : archivePolicy.userId;
   const { files, setFiles, usedBytes, loading, error, firebaseReady } = useArchiveFiles(userId);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => {
+    return localStorage.getItem('archive_store_remembered_email') || '';
+  });
   const [password, setPassword] = useState('');
+  const [rememberEmail, setRememberEmail] = useState(() => {
+    return localStorage.getItem('archive_store_remember_email') === 'true';
+  });
+  const [isResetMode, setIsResetMode] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetStatus, setResetStatus] = useState('');
   const [pin, setPin] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem(unlockSessionKey) === 'true');
   const [activeCategory, setActiveCategory] = useState('all');
@@ -140,8 +148,35 @@ export function ArchiveView() {
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
       setPassword('');
+      if (rememberEmail) {
+        localStorage.setItem('archive_store_remember_email', 'true');
+        localStorage.setItem('archive_store_remembered_email', email.trim());
+      } else {
+        localStorage.removeItem('archive_store_remember_email');
+        localStorage.removeItem('archive_store_remembered_email');
+      }
     } catch (nextError) {
       setUploadStatus(getAuthErrorMessage(nextError));
+    }
+  }
+
+  async function handlePasswordReset(event) {
+    event.preventDefault();
+    if (!auth) return;
+
+    setResetStatus('비밀번호 재설정 이메일을 전송하는 중...');
+    try {
+      await sendPasswordResetEmail(auth, resetEmail.trim());
+      setResetStatus('비밀번호 재설정 이메일이 발송되었습니다. 메일함을 확인해 주세요.');
+      setResetEmail('');
+    } catch (error) {
+      let errorMsg = '이메일 전송에 실패했습니다.';
+      if (error?.code === 'auth/user-not-found') {
+        errorMsg = '가입되어 있지 않은 이메일 주소입니다.';
+      } else if (error?.code === 'auth/invalid-email') {
+        errorMsg = '올바르지 않은 이메일 형식입니다.';
+      }
+      setResetStatus(errorMsg);
     }
   }
 
@@ -278,6 +313,33 @@ export function ArchiveView() {
     }
   }
 
+  if (isFirebaseBackend && isResetMode) {
+    return (
+      <main className="auth-shell">
+        <form className="auth-panel" onSubmit={handlePasswordReset}>
+          <p className="eyebrow">Archive Store</p>
+          <h1>비밀번호 재설정</h1>
+          <p className="auth-note">가입된 이메일 주소로 재설정 링크를 전송합니다.</p>
+          <label>
+            <span>이메일</span>
+            <input
+              autoComplete="email"
+              autoFocus
+              type="email"
+              value={resetEmail}
+              onChange={(event) => setResetEmail(event.target.value)}
+            />
+          </label>
+          <button type="submit" disabled={!resetEmail.trim()}>재설정 이메일 보내기</button>
+          {resetStatus && <p className="auth-note reset-message">{resetStatus}</p>}
+          <button className="text-button" type="button" onClick={() => setIsResetMode(false)}>
+            로그인 화면으로 돌아가기
+          </button>
+        </form>
+      </main>
+    );
+  }
+
   if (isFirebaseBackend && (authLoading || !authUser)) {
     return (
       <main className="auth-shell">
@@ -305,8 +367,19 @@ export function ArchiveView() {
               onChange={(event) => setPassword(event.target.value)}
             />
           </label>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={rememberEmail}
+              onChange={(event) => setRememberEmail(event.target.checked)}
+            />
+            <span>이메일 기억하기</span>
+          </label>
           <button type="submit" disabled={authLoading || !email.trim() || !password}>로그인</button>
           {uploadStatus && <p className="pin-error">{uploadStatus}</p>}
+          <button className="text-button" type="button" onClick={() => { setIsResetMode(true); setResetStatus(''); }}>
+            비밀번호를 잊으셨나요?
+          </button>
         </form>
       </main>
     );
