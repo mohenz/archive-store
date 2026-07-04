@@ -55,7 +55,8 @@ function getDeleteErrorMessage(error) {
 }
 
 export function ArchiveView() {
-  const dataBackend = import.meta.env.VITE_DATA_BACKEND || 'local-api';
+  const rawBackend = import.meta.env.VITE_DATA_BACKEND || 'local-api';
+  const dataBackend = String(rawBackend).trim().replace(/^\uFEFF/g, '');
   const isFirebaseBackend = dataBackend === 'firebase';
   const [authUser, setAuthUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(isFirebaseBackend && isFirebaseConfigured);

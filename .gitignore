@@ -9,3 +9,5 @@ docs/required_user_inputs.md
 .env.*.local
 .firebaserc
 *.log
+
+.vercel
