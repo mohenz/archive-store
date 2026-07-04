@@ -567,7 +567,7 @@ export function ArchiveView() {
                       <FileIcon size={18} aria-hidden="true" />
                     </span>
                     <strong>{file.filename}</strong>
-                    <span>{file.mimeType || '-'}</span>
+                    <span className="file-mime">{file.mimeType || '-'}</span>
                     <small>{formatBytes(file.size)}</small>
                   </button>
                 </div>

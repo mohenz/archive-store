@@ -807,7 +807,7 @@ h1 {
     grid-template-columns: 48px minmax(0, 1fr) 76px;
   }
 
-  .file-open span {
+  .file-open .file-mime {
     display: none;
   }
 
