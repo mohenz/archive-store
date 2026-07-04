@@ -1,11 +1,11 @@
-import { File, FileQuestion, FileText, Grid2X2, Image, Layers, LogOut, Search, UploadCloud } from 'lucide-react';
+import { File, FileQuestion, FileText, Grid2X2, Image, Layers, LogOut, Search, Trash2, UploadCloud } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { archivePolicy } from '../config/archivePolicy.js';
 import { validateArchiveFiles } from '../core/fileValidation.js';
 import { formatBytes, getFileInitial } from '../core/fileTypes.js';
-import { uploadArchiveFile } from '../features/archive/archiveService.js';
-import { uploadLocalFile } from '../features/archive/localArchiveApi.js';
+import { deleteArchiveFile, uploadArchiveFile } from '../features/archive/archiveService.js';
+import { deleteLocalFile, uploadLocalFile } from '../features/archive/localArchiveApi.js';
 import { useArchiveFiles } from '../features/archive/useArchiveFiles.js';
 import { auth, isFirebaseConfigured } from '../firebase/client.js';
 import { FilePreviewModal } from '../views/FilePreviewModal.jsx';
@@ -18,7 +18,7 @@ const categories = [
   { id: 'other', label: '기타', Icon: Grid2X2 },
 ];
 
-const pageSizeOptions = [20, 40, 60, 80, 100, 'All'];
+const pageSizeOptions = [20, 40, 60, 80, 100, 'all'];
 const unlockSessionKey = 'archive-store-unlocked';
 
 const fileCategoryIcons = {
@@ -43,6 +43,17 @@ function getAuthErrorMessage(error) {
   }
 }
 
+function getDeleteErrorMessage(error) {
+  switch (error?.code) {
+    case 'storage/unauthorized':
+      return '스토리지 파일 삭제 권한이 없어 삭제하지 못했습니다. Firebase Storage Rules를 확인하세요.';
+    case 'permission-denied':
+      return '파일 목록 삭제 권한이 없어 삭제하지 못했습니다. Firestore Rules를 확인하세요.';
+    default:
+      return error?.message || '파일 삭제에 실패했습니다.';
+  }
+}
+
 export function ArchiveView() {
   const dataBackend = import.meta.env.VITE_DATA_BACKEND || 'local-api';
   const isFirebaseBackend = dataBackend === 'firebase';
@@ -60,6 +71,7 @@ export function ArchiveView() {
   const [uploadStatus, setUploadStatus] = useState('');
   const [pageSize, setPageSize] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedIds, setSelectedIds] = useState(() => new Set());
 
   const filteredFiles = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -87,9 +99,22 @@ export function ArchiveView() {
     return Array.from({ length: groupEnd - groupStart + 1 }, (_, index) => groupStart + index);
   }, [pageCount, safeCurrentPage]);
 
+  const selectedFiles = useMemo(() => files.filter((file) => selectedIds.has(file.id)), [files, selectedIds]);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [activeCategory, pageSize, query]);
+
+  useEffect(() => {
+    setSelectedIds((currentIds) => {
+      const nextIds = new Set();
+      const validIds = new Set(files.map((file) => file.id));
+      currentIds.forEach((id) => {
+        if (validIds.has(id)) nextIds.add(id);
+      });
+      return nextIds;
+    });
+  }, [files]);
 
   useEffect(() => {
     if (!isFirebaseBackend || !auth) {
@@ -179,6 +204,57 @@ export function ArchiveView() {
       });
     }
     setUploadStatus('업로드 완료');
+  }
+
+  function toggleSelected(fileId) {
+    setSelectedIds((currentIds) => {
+      const nextIds = new Set(currentIds);
+      if (nextIds.has(fileId)) {
+        nextIds.delete(fileId);
+      } else {
+        nextIds.add(fileId);
+      }
+      return nextIds;
+    });
+  }
+
+  async function deleteFiles(targetFiles, label) {
+    if (!targetFiles.length) return;
+
+    const confirmed = window.confirm(`${label} ${targetFiles.length}개 파일을 삭제할까요? 삭제한 파일은 복구할 수 없습니다.`);
+    if (!confirmed) return;
+
+    setUploadStatus(`${targetFiles.length}개 파일 삭제 중`);
+    try {
+      if (dataBackend === 'local-api') {
+        for (const file of targetFiles) {
+          await deleteLocalFile(file.id);
+        }
+      } else {
+        if (!userId) {
+          setUploadStatus('로그인 후 삭제할 수 있습니다.');
+          return;
+        }
+
+        for (const file of targetFiles) {
+          await deleteArchiveFile({ file, userId });
+        }
+      }
+
+      const deletedIds = new Set(targetFiles.map((file) => file.id));
+      setFiles((currentFiles) => currentFiles.filter((file) => !deletedIds.has(file.id)));
+      setSelectedIds((currentIds) => {
+        const nextIds = new Set(currentIds);
+        deletedIds.forEach((id) => nextIds.delete(id));
+        return nextIds;
+      });
+      if (selectedFile && deletedIds.has(selectedFile.id)) {
+        setSelectedFile(null);
+      }
+      setUploadStatus(`${targetFiles.length}개 파일 삭제 완료`);
+    } catch (nextError) {
+      setUploadStatus(getDeleteErrorMessage(nextError));
+    }
   }
 
   function handleDrop(event) {
@@ -337,6 +413,17 @@ export function ArchiveView() {
 
           <section className="list-tools" aria-label="파일 목록 표시 설정">
             <span>총 {filteredFiles.length}개</span>
+            <div className="delete-tools">
+              <span>선택 {selectedFiles.length}개</span>
+              <button type="button" disabled={!selectedFiles.length} onClick={() => deleteFiles(selectedFiles, '선택한')}>
+                <Trash2 size={16} aria-hidden="true" />
+                선택삭제
+              </button>
+              <button type="button" disabled={!filteredFiles.length} onClick={() => deleteFiles(filteredFiles, '현재 목록의')}>
+                <Trash2 size={16} aria-hidden="true" />
+                전체삭제
+              </button>
+            </div>
             <label>
               <span>목록</span>
               <select value={pageSize} onChange={(event) => setPageSize(event.target.value === 'all' ? 'all' : Number(event.target.value))}>
@@ -353,14 +440,22 @@ export function ArchiveView() {
             {visibleFiles.map((file) => {
               const FileIcon = fileCategoryIcons[file.category] ?? fileCategoryIcons.other;
               return (
-                <button className="file-row" key={file.id} type="button" onClick={() => setSelectedFile(file)}>
-                  <span className={`file-badge ${file.category}`} aria-label={getFileInitial(file.category)} title={getFileInitial(file.category)}>
-                    <FileIcon size={18} aria-hidden="true" />
-                  </span>
-                  <strong>{file.filename}</strong>
-                  <span>{file.mimeType || '-'}</span>
-                  <small>{formatBytes(file.size)}</small>
-                </button>
+                <div className="file-row" key={file.id}>
+                  <input
+                    aria-label={`${file.filename} 선택`}
+                    checked={selectedIds.has(file.id)}
+                    type="checkbox"
+                    onChange={() => toggleSelected(file.id)}
+                  />
+                  <button className="file-open" type="button" onClick={() => setSelectedFile(file)}>
+                    <span className={`file-badge ${file.category}`} aria-label={getFileInitial(file.category)} title={getFileInitial(file.category)}>
+                      <FileIcon size={18} aria-hidden="true" />
+                    </span>
+                    <strong>{file.filename}</strong>
+                    <span>{file.mimeType || '-'}</span>
+                    <small>{formatBytes(file.size)}</small>
+                  </button>
+                </div>
               );
             })}
           </section>

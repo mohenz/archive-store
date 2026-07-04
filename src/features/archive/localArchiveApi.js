@@ -25,3 +25,13 @@ export async function uploadLocalFile(file) {
   return response.json();
 }
 
+export async function deleteLocalFile(fileId) {
+  const response = await fetch(`${apiBaseUrl}/api/files/${encodeURIComponent(fileId)}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error('로컬 파일 삭제에 실패했습니다.');
+  }
+}
+

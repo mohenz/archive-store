@@ -1,12 +1,14 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
 } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { db, isFirebaseConfigured, storage } from '../../firebase/client.js';
 import { getFileCategory } from '../../core/fileTypes.js';
 
@@ -65,5 +67,21 @@ export async function uploadArchiveFile({ file, userId, onProgress }) {
     uploadedAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
+}
+
+export async function deleteArchiveFile({ file, userId }) {
+  requireFirebase();
+
+  if (file.storagePath) {
+    try {
+      await deleteObject(ref(storage, file.storagePath));
+    } catch (error) {
+      if (error?.code !== 'storage/object-not-found') {
+        throw error;
+      }
+    }
+  }
+
+  await deleteDoc(doc(db, 'users', userId, 'files', file.id));
 }
 

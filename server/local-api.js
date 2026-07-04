@@ -1,7 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import multer from 'multer';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import pg from 'pg';
@@ -87,6 +87,26 @@ app.post('/api/files', upload.single('file'), async (req, res) => {
   );
 
   res.status(201).json(rowToFile(result.rows[0]));
+});
+
+app.delete('/api/files/:id', async (req, res) => {
+  const result = await pool.query('select storage_path from archive_files where id = $1', [req.params.id]);
+  if (!result.rowCount) {
+    res.status(404).json({ error: 'file not found' });
+    return;
+  }
+
+  try {
+    await unlink(result.rows[0].storage_path);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      res.status(500).json({ error: 'failed to delete stored file' });
+      return;
+    }
+  }
+
+  await pool.query('delete from archive_files where id = $1', [req.params.id]);
+  res.status(204).end();
 });
 
 const port = Number(process.env.API_PORT || 5175);
