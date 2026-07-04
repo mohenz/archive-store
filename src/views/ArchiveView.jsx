@@ -524,19 +524,17 @@ export function ArchiveView() {
                   onChange={handleSelectAllToggle}
                   aria-label="모든 파일 선택"
                 />
-                <span>모두선택</span>
               </label>
-              <span>총 {filteredFiles.length}개</span>
             </div>
             <div className="delete-tools">
               <span>선택 {selectedFiles.length}개</span>
               <button type="button" disabled={!selectedFiles.length} onClick={() => deleteFiles(selectedFiles, '선택한')}>
                 <Trash2 size={16} aria-hidden="true" />
-                선택삭제
+                선택
               </button>
               <button type="button" disabled={!filteredFiles.length} onClick={() => deleteFiles(filteredFiles, '현재 목록의')}>
                 <Trash2 size={16} aria-hidden="true" />
-                전체삭제
+                전체
               </button>
             </div>
             <label>

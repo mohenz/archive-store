@@ -811,10 +811,16 @@ h1 {
     display: none;
   }
 
-  .list-tools,
   .pagination {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .list-tools {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
   }
 }
 
