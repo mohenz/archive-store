@@ -103,6 +103,30 @@ export function ArchiveView() {
     return filteredFiles.slice(start, start + effectivePageSize);
   }, [effectivePageSize, filteredFiles, pageSize, safeCurrentPage]);
 
+  const isAllSelected = useMemo(() => {
+    return visibleFiles.length > 0 && visibleFiles.every((file) => selectedIds.has(file.id));
+  }, [visibleFiles, selectedIds]);
+
+  const isSomeSelected = useMemo(() => {
+    return !isAllSelected && visibleFiles.some((file) => selectedIds.has(file.id));
+  }, [visibleFiles, selectedIds, isAllSelected]);
+
+  function handleSelectAllToggle() {
+    if (isAllSelected) {
+      setSelectedIds((currentIds) => {
+        const nextIds = new Set(currentIds);
+        visibleFiles.forEach((file) => nextIds.delete(file.id));
+        return nextIds;
+      });
+    } else {
+      setSelectedIds((currentIds) => {
+        const nextIds = new Set(currentIds);
+        visibleFiles.forEach((file) => nextIds.add(file.id));
+        return nextIds;
+      });
+    }
+  }
+
   const pageNumbers = useMemo(() => {
     const groupStart = Math.floor((safeCurrentPage - 1) / 10) * 10 + 1;
     const groupEnd = Math.min(groupStart + 9, pageCount);
@@ -487,7 +511,23 @@ export function ArchiveView() {
           )}
 
           <section className="list-tools" aria-label="파일 목록 표시 설정">
-            <span>총 {filteredFiles.length}개</span>
+            <div className="select-all-wrapper">
+              <label className="select-all-label">
+                <input
+                  type="checkbox"
+                  checked={isAllSelected}
+                  ref={(el) => {
+                    if (el) {
+                      el.indeterminate = isSomeSelected;
+                    }
+                  }}
+                  onChange={handleSelectAllToggle}
+                  aria-label="모든 파일 선택"
+                />
+                <span>모두선택</span>
+              </label>
+              <span>총 {filteredFiles.length}개</span>
+            </div>
             <div className="delete-tools">
               <span>선택 {selectedFiles.length}개</span>
               <button type="button" disabled={!selectedFiles.length} onClick={() => deleteFiles(selectedFiles, '선택한')}>
