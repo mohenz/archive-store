@@ -603,8 +603,9 @@ h1 {
 }
 
 /* Checkbox and text button styling */
-.checkbox-label {
-  display: inline-flex;
+.auth-panel .checkbox-label {
+  display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
   cursor: pointer;
@@ -613,11 +614,14 @@ h1 {
   color: #4b5563;
   margin-top: 4px;
   margin-bottom: 8px;
+  width: auto;
 }
 
-.checkbox-label input[type="checkbox"] {
+.auth-panel .checkbox-label input[type="checkbox"] {
   width: 16px;
   height: 16px;
+  min-height: auto;
+  margin: 0;
   cursor: pointer;
 }
 
