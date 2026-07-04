@@ -59,7 +59,9 @@ export function ArchiveWorkspaceScreen({
   return (
     <main className="app-shell" onPaste={onPaste}>
       <section className="toolbar">
-        <div />
+        <div>
+          <h1>자료실</h1>
+        </div>
         {isFirebaseBackend && (
           <div className="toolbar-actions">
             <span>{authUser.email}</span>
@@ -71,10 +73,10 @@ export function ArchiveWorkspaceScreen({
       </section>
 
       <section className="workspace-layout">
-        <aside className="left-panel" aria-label="아카이브 현황과 업로드">
+        <aside className="left-panel" aria-label="자료실 현황과 업로드">
           <section className="storage-band">
             <div>
-              <span>아카이브 현황</span>
+              <span>자료실 현황</span>
               <strong>{formatBytes(usedBytes)} / {formatBytes(archivePolicy.storageLimitBytes)}</strong>
             </div>
             <div className="meter" aria-label="스토리지 사용량">

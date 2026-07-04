@@ -24,7 +24,6 @@ export function ArchiveAuthScreen({
     return (
       <main className="auth-shell">
         <form className="auth-panel" onSubmit={onPasswordReset}>
-          <p className="eyebrow">Archive Store</p>
           <h1>비밀번호 재설정</h1>
           <p className="auth-note">가입된 이메일 주소로 재설정 링크를 전송합니다.</p>
           <label>
@@ -51,9 +50,8 @@ export function ArchiveAuthScreen({
     return (
       <main className="auth-shell">
         <form className="auth-panel" onSubmit={onLogin}>
-          <p className="eyebrow">Archive Store</p>
           <h1>계정 로그인</h1>
-          <p className="auth-note">Firebase 계정으로 개인 아카이브에 접속합니다.</p>
+          <p className="auth-note">Firebase 계정으로 개인 자료실에 접속합니다.</p>
           {authLoading && <p className="auth-note">인증 상태를 확인하고 있습니다.</p>}
           <label>
             <span>이메일</span>
@@ -95,7 +93,6 @@ export function ArchiveAuthScreen({
   return (
     <main className="auth-shell">
       <form className="pin-panel" onSubmit={onUnlock}>
-        <p className="eyebrow">Archive Store</p>
         <h1>PIN 인증</h1>
         <label>
           <span>PIN</span>
