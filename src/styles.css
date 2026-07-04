@@ -531,12 +531,15 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 22px;
   color: #667085;
   font-size: 0.9rem;
+  margin-top: 22px;
+  padding: 14px 0;
+  border-top: 1px solid #dde3ea;
+  border-bottom: 1px solid #dde3ea;
 }
 
-.select-all-wrapper {
+.left-tools-group {
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -602,6 +605,11 @@ h1 {
   box-shadow: none;
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+.bulk-actions + .list-tools {
+  padding-bottom: 12px;
+  border-bottom: 1px solid #edf1f5;
 }
 
 .list-tools label {
@@ -980,7 +988,12 @@ h1 {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 6px;
+    font-size: 0.82rem;
+  }
+
+  .left-tools-group {
+    gap: 6px;
   }
 }
 
