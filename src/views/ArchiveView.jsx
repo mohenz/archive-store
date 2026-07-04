@@ -25,6 +25,10 @@ export function ArchiveView() {
     userId: authState.userId,
   });
 
+  if (authState.screenType === 'loading') {
+    return <div className="auth-loading-placeholder" />;
+  }
+
   if (authState.screenType) {
     return (
       <ArchiveAuthScreen

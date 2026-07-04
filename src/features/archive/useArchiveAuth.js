@@ -122,9 +122,11 @@ export function useArchiveAuth({ dataBackend }) {
   }
 
   let screenType = null;
-  if (isFirebaseBackend && isResetMode) {
+  if (isFirebaseBackend && authLoading) {
+    screenType = 'loading';
+  } else if (isFirebaseBackend && isResetMode) {
     screenType = 'reset';
-  } else if (isFirebaseBackend && (authLoading || !authUser)) {
+  } else if (isFirebaseBackend && !authUser) {
     screenType = 'firebase';
   } else if (!isFirebaseBackend && !isUnlocked) {
     screenType = 'pin';
