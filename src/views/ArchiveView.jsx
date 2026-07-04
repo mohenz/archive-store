@@ -484,13 +484,13 @@ export function ArchiveView() {
             <div className="category-tabs" aria-label="파일 종류 필터">
               {categories.map((category) => (
                 <button
-                  className={activeCategory === category.id ? 'active' : ''}
+                  className={`${activeCategory === category.id ? 'active' : ''} tab-${category.id}`}
                   key={category.id}
                   type="button"
                   onClick={() => setActiveCategory(category.id)}
+                  title={category.label}
                 >
-                  <category.Icon size={16} aria-hidden="true" />
-                  {category.label}
+                  <category.Icon size={18} aria-hidden="true" />
                 </button>
               ))}
             </div>

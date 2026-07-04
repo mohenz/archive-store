@@ -410,30 +410,45 @@ h1 {
 }
 
 .category-tabs {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(96px, 1fr));
-  gap: 8px;
+  display: flex;
+  gap: 6px;
 }
 
 .category-tabs button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 38px;
-  min-width: 0;
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
   border: 1px solid #d8dee8;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #fff;
-  color: #344054;
-  padding: 0 12px;
+  padding: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 
-.category-tabs button.active {
-  border-color: #202124;
-  color: #fff;
-  background: #202124;
-}
+/* Tab Colors (Colorful Palette) */
+.category-tabs button.tab-all { color: #6366f1; border-color: #e0e7ff; background: #f5f7ff; }
+.category-tabs button.tab-all.active { background: #6366f1; border-color: #6366f1; color: #fff; }
+.category-tabs button.tab-all:hover:not(.active) { background: #e0e7ff; color: #4f46e5; }
+
+.category-tabs button.tab-image { color: #10b981; border-color: #d1fae5; background: #f0fdf4; }
+.category-tabs button.tab-image.active { background: #10b981; border-color: #10b981; color: #fff; }
+.category-tabs button.tab-image:hover:not(.active) { background: #d1fae5; color: #059669; }
+
+.category-tabs button.tab-text { color: #f59e0b; border-color: #fef3c7; background: #fffbeb; }
+.category-tabs button.tab-text.active { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+.category-tabs button.tab-text:hover:not(.active) { background: #fef3c7; color: #d97706; }
+
+.category-tabs button.tab-document { color: #0ea5e9; border-color: #e0f2fe; background: #f0f9ff; }
+.category-tabs button.tab-document.active { background: #0ea5e9; border-color: #0ea5e9; color: #fff; }
+.category-tabs button.tab-document:hover:not(.active) { background: #e0f2fe; color: #0284c7; }
+
+.category-tabs button.tab-other { color: #ec4899; border-color: #fce7f3; background: #fdf2f8; }
+.category-tabs button.tab-other.active { background: #ec4899; border-color: #ec4899; color: #fff; }
+.category-tabs button.tab-other:hover:not(.active) { background: #fce7f3; color: #db2777; }
 
 .search-box {
   display: flex;
@@ -774,6 +789,130 @@ h1 {
   object-fit: contain;
 }
 
+
+.file-badge {
+  width: 48px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.file-badge.image {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.file-badge.text {
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+.file-badge.document {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.pagination div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.pagination button {
+  min-width: 38px;
+  min-height: 36px;
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  background: #fff;
+  color: #344054;
+  padding: 0 10px;
+}
+
+.pagination button.active {
+  border-color: #202124;
+  background: #202124;
+  color: #fff;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(15 23 42 / 55%);
+}
+
+.preview-modal {
+  width: min(720px, 100%);
+  max-height: min(760px, calc(100vh - 40px));
+  display: grid;
+  grid-template-rows: auto minmax(220px, 1fr) auto;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.preview-modal header,
+.preview-modal footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.preview-modal footer {
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 0;
+}
+
+.preview-modal header p {
+  color: #667085;
+  font-size: 0.82rem;
+}
+
+.icon-button {
+  width: 40px;
+  padding: 0;
+  border-color: #d8dee8;
+  background: #fff;
+  color: #202124;
+}
+
+.preview-body {
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: 16px;
+  background: #f7f8fa;
+}
+
+.preview-body img {
+  max-width: 100%;
+  max-height: 540px;
+  object-fit: contain;
+}
+
 .preview-placeholder {
   display: grid;
   place-items: center;
@@ -816,7 +955,8 @@ h1 {
   }
 
   .category-tabs {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    gap: 6px;
   }
 
   .file-row {
