@@ -17,6 +17,7 @@ const categories = [
 ];
 
 const pageSizeOptions = [20, 40, 60, 80, 100, 'all'];
+const unlockSessionKey = 'archive-store-unlocked';
 
 const fileCategoryIcons = {
   image: Image,
@@ -28,7 +29,7 @@ const fileCategoryIcons = {
 export function ArchiveView() {
   const { files, setFiles, usedBytes, loading, error, firebaseReady, dataBackend } = useArchiveFiles(archivePolicy.userId);
   const [pin, setPin] = useState('');
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem(unlockSessionKey) === 'true');
   const [activeCategory, setActiveCategory] = useState('all');
   const [query, setQuery] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -69,6 +70,7 @@ export function ArchiveView() {
   function handleUnlock(event) {
     event.preventDefault();
     if (pin === archivePolicy.pin) {
+      sessionStorage.setItem(unlockSessionKey, 'true');
       setIsUnlocked(true);
       setUploadStatus('');
       return;
