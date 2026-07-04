@@ -59,10 +59,7 @@ export function ArchiveWorkspaceScreen({
   return (
     <main className="app-shell" onPaste={onPaste}>
       <section className="toolbar">
-        <div>
-          <p className="eyebrow">Archive Store</p>
-          <h1>개인용 아카이브 저장소</h1>
-        </div>
+        <div />
         {isFirebaseBackend && (
           <div className="toolbar-actions">
             <span>{authUser.email}</span>
