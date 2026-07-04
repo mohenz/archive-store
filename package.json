@@ -13,6 +13,7 @@
     "build": "vite build --config config/vite.config.js",
     "preview": "vite preview --config config/vite.config.js",
     "check:syntax": "node --check config/vite.config.js && node --check server/local-api.js",
+    "test": "vitest run",
     "firebase:login": "firebase login",
     "firebase:projects": "firebase projects:list",
     "firebase:use": "firebase use --add",
@@ -34,6 +35,7 @@
     "vite": "^6.0.7"
   },
   "devDependencies": {
-    "firebase-tools": "^15.22.4"
+    "firebase-tools": "^15.22.4",
+    "vitest": "^4.1.9"
   }
 }
