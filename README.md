@@ -12,9 +12,9 @@ Firebase 기반 개인용 아카이브 저장소입니다.
 - Stitch MCP 산출물 수집 구조
 
 ## 시작 전 준비
-1. Firebase 프로젝트를 생성합니다.
+1. Firebase 프로젝트 `archive-store-fae71`을 사용합니다.
 2. Web App을 추가하고 Firebase config 값을 확인합니다.
-3. `config\.env.example`을 기준으로 `.env.local`을 생성하고 `VITE_ARCHIVE_PIN`을 설정합니다.
+3. 로컬 API 기준은 `config\.env.example`, Firebase 기준은 `config\.env.firebase.example`을 복사해 `.env.local`을 생성하고 `VITE_ARCHIVE_PIN`을 설정합니다.
 4. Cloud Firestore, Firebase Storage를 활성화합니다.
 
 ## 실행
@@ -75,8 +75,8 @@ auth=trust
 - `docs/requirements/프로젝트_아키텍처_및_개발계획서.md`
 - `docs/requirements/디자인_작업_명세서_Stitch.md`
 - `docs/firebase_setup.md`
+- `docs/firebase_infra_setup.md`
 - `docs/transfer_guide.md`
 
 ## 배포 방향
-- Firebase Hosting은 사용하지 않습니다.
-- Vercel + Git 배포를 기준으로 진행합니다.
+- Firebase Hosting, Firestore, Storage 인프라 연결을 기준으로 진행합니다.

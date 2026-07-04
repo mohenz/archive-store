@@ -7,4 +7,5 @@ docs/required_user_inputs.md
 .env
 .env.local
 .env.*.local
+.firebaserc
 *.log
