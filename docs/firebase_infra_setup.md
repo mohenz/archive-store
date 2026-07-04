@@ -38,6 +38,7 @@ VITE_DATA_BACKEND=firebase
 ```
 
 Firebase Console에서 Authentication > Sign-in method의 Email/Password 제공업체를 활성화하고, 로그인에 사용할 운영 계정을 생성합니다.
+배포된 Archive Store 로그인 화면에서는 이 운영 계정의 이메일/비밀번호를 입력합니다.
 
 ## 로컬 에뮬레이터
 ```powershell

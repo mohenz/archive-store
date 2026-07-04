@@ -1,7 +1,7 @@
 # Firebase Setup
 
 ## 필요한 Firebase 기능
-- Authentication: Email/Password 로그인 사용. Firebase Console에서 Email/Password 제공업체를 활성화하고 운영 계정을 생성해야 함.
+- Authentication: Email/Password 로그인 사용. Firebase Console에서 Email/Password 제공업체를 활성화하고 운영 계정을 생성해야 함. 앱 로그인 화면은 이 계정으로 접속함.
 - Cloud Firestore: 파일 메타데이터 저장
 - Firebase Storage: 실제 파일 저장
 
@@ -27,7 +27,7 @@
 - Firestore 메타데이터와 Storage 파일 경로의 uid가 일치해야 합니다.
 - 텍스트 미리보기는 HTML로 삽입하지 말고 텍스트로 렌더링해야 합니다.
 - 다운로드 트래픽 과금 방지를 위해 예산 알림을 설정해야 합니다.
-- Firebase 백엔드 모드에서는 로그인한 사용자의 `auth.uid`와 Firestore/Storage 경로의 `uid`가 일치해야 합니다.
+- Firebase 백엔드 모드에서는 로그인한 사용자의 `auth.uid`와 Firestore/Storage 경로의 `uid`가 일치해야 합니다. 업로드/목록 조회는 이 `uid` 기준으로 수행합니다.
 
 ## 현재 확정 정책
 - 인증 방식: Firebase Email/Password Auth

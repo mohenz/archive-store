@@ -31,7 +31,8 @@ button {
   padding: 24px;
 }
 
-.pin-panel {
+.pin-panel,
+.auth-panel {
   width: min(360px, 100%);
   display: grid;
   gap: 16px;
@@ -41,14 +42,20 @@ button {
   padding: 22px;
 }
 
-.pin-panel label {
+.auth-panel {
+  width: min(420px, 100%);
+}
+
+.pin-panel label,
+.auth-panel label {
   display: grid;
   gap: 8px;
   color: #344054;
   font-size: 0.92rem;
 }
 
-.pin-panel input {
+.pin-panel input,
+.auth-panel input {
   width: 100%;
   min-height: 42px;
   border: 1px solid #d8dee8;
@@ -56,12 +63,18 @@ button {
   padding: 0 12px;
 }
 
-.pin-panel button {
+.pin-panel button,
+.auth-panel button {
   min-height: 42px;
   border: 1px solid #202124;
   border-radius: 8px;
   background: #202124;
   color: #fff;
+}
+
+.auth-panel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .pin-error {

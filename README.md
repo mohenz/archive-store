@@ -15,7 +15,7 @@ Firebase 기반 개인용 아카이브 저장소입니다.
 ## 시작 전 준비
 1. Firebase 프로젝트 `archive-store-fae71`을 사용합니다.
 2. Web App을 추가하고 Firebase config 값을 확인합니다.
-3. Firebase Authentication에서 Email/Password 제공업체를 활성화하고 운영 계정을 생성합니다.
+3. Firebase Authentication에서 Email/Password 제공업체를 활성화하고 운영 계정을 생성합니다. 사이트 로그인은 이 계정을 사용합니다.
 4. 로컬 API 기준은 `config\.env.example`, Firebase 기준은 `config\.env.firebase.example`을 복사해 `.env.local`을 생성합니다.
 5. Cloud Firestore, Firebase Storage를 활성화합니다.
 

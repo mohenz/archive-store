@@ -18,7 +18,7 @@ const categories = [
   { id: 'other', label: '기타', Icon: Grid2X2 },
 ];
 
-const pageSizeOptions = [20, 40, 60, 80, 100, 'all'];
+const pageSizeOptions = [20, 40, 60, 80, 100, 'All'];
 const unlockSessionKey = 'archive-store-unlocked';
 
 const fileCategoryIcons = {
@@ -27,6 +27,21 @@ const fileCategoryIcons = {
   document: File,
   other: FileQuestion,
 };
+
+function getAuthErrorMessage(error) {
+  switch (error?.code) {
+    case 'auth/invalid-credential':
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+      return '이메일 또는 비밀번호가 올바르지 않습니다.';
+    case 'auth/too-many-requests':
+      return '로그인 시도가 많습니다. 잠시 후 다시 시도하세요.';
+    case 'auth/network-request-failed':
+      return '네트워크 연결을 확인하세요.';
+    default:
+      return error?.message || '로그인에 실패했습니다.';
+  }
+}
 
 export function ArchiveView() {
   const dataBackend = import.meta.env.VITE_DATA_BACKEND || 'local-api';
@@ -100,7 +115,7 @@ export function ArchiveView() {
       await signInWithEmailAndPassword(auth, email.trim(), password);
       setPassword('');
     } catch (nextError) {
-      setUploadStatus(nextError.message || '로그인에 실패했습니다.');
+      setUploadStatus(getAuthErrorMessage(nextError));
     }
   }
 
@@ -150,11 +165,16 @@ export function ArchiveView() {
       return;
     }
 
+    if (!userId) {
+      setUploadStatus('로그인 후 업로드할 수 있습니다.');
+      return;
+    }
+
     for (const file of accepted) {
       setUploadStatus(`${file.name} 업로드 준비`);
       await uploadArchiveFile({
         file,
-        userId: archivePolicy.userId,
+        userId,
         onProgress: (progress) => setUploadStatus(`${file.name} ${progress}%`),
       });
     }
@@ -184,10 +204,11 @@ export function ArchiveView() {
   if (isFirebaseBackend && (authLoading || !authUser)) {
     return (
       <main className="auth-shell">
-        <form className="pin-panel" onSubmit={handleLogin}>
+        <form className="auth-panel" onSubmit={handleLogin}>
           <p className="eyebrow">Archive Store</p>
-          <h1>로그인</h1>
-          {authLoading && <p className="auth-note">Firebase 인증 상태를 확인하고 있습니다.</p>}
+          <h1>계정 로그인</h1>
+          <p className="auth-note">Firebase 계정으로 개인 아카이브에 접속합니다.</p>
+          {authLoading && <p className="auth-note">인증 상태를 확인하고 있습니다.</p>}
           <label>
             <span>이메일</span>
             <input
@@ -207,7 +228,7 @@ export function ArchiveView() {
               onChange={(event) => setPassword(event.target.value)}
             />
           </label>
-          <button type="submit" disabled={authLoading}>열기</button>
+          <button type="submit" disabled={authLoading || !email.trim() || !password}>로그인</button>
           {uploadStatus && <p className="pin-error">{uploadStatus}</p>}
         </form>
       </main>
