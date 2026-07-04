@@ -570,14 +570,14 @@ h1 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
+  gap: 6px;
   height: 36px;
   min-height: 36px;
   border: 1px solid #fee2e2;
   border-radius: 8px;
   background: #fef2f2;
   color: #ef4444;
-  padding: 0;
+  padding: 0 10px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 4px rgba(239, 68, 68, 0.08);
   cursor: pointer;

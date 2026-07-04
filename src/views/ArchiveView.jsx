@@ -530,9 +530,11 @@ export function ArchiveView() {
               <span>선택 {selectedFiles.length}개</span>
               <button type="button" disabled={!selectedFiles.length} onClick={() => deleteFiles(selectedFiles, '선택한')} title="선택한 파일 삭제">
                 <Trash2 size={16} aria-hidden="true" />
+                선택
               </button>
               <button type="button" disabled={!filteredFiles.length} onClick={() => deleteFiles(filteredFiles, '현재 목록의')} title="현재 목록 전체 삭제">
                 <Trash2 size={16} aria-hidden="true" />
+                전체
               </button>
             </div>
             <label>
