@@ -1,11 +1,13 @@
-import { File, FileQuestion, FileText, Grid2X2, Image, Layers, Search, UploadCloud } from 'lucide-react';
+import { File, FileQuestion, FileText, Grid2X2, Image, Layers, LogOut, Search, UploadCloud } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { archivePolicy } from '../config/archivePolicy.js';
 import { validateArchiveFiles } from '../core/fileValidation.js';
 import { formatBytes, getFileInitial } from '../core/fileTypes.js';
 import { uploadArchiveFile } from '../features/archive/archiveService.js';
 import { uploadLocalFile } from '../features/archive/localArchiveApi.js';
 import { useArchiveFiles } from '../features/archive/useArchiveFiles.js';
+import { auth, isFirebaseConfigured } from '../firebase/client.js';
 import { FilePreviewModal } from '../views/FilePreviewModal.jsx';
 
 const categories = [
@@ -27,7 +29,14 @@ const fileCategoryIcons = {
 };
 
 export function ArchiveView() {
-  const { files, setFiles, usedBytes, loading, error, firebaseReady, dataBackend } = useArchiveFiles(archivePolicy.userId);
+  const dataBackend = import.meta.env.VITE_DATA_BACKEND || 'local-api';
+  const isFirebaseBackend = dataBackend === 'firebase';
+  const [authUser, setAuthUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(isFirebaseBackend && isFirebaseConfigured);
+  const userId = isFirebaseBackend ? authUser?.uid : archivePolicy.userId;
+  const { files, setFiles, usedBytes, loading, error, firebaseReady } = useArchiveFiles(userId);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [pin, setPin] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem(unlockSessionKey) === 'true');
   const [activeCategory, setActiveCategory] = useState('all');
@@ -66,6 +75,43 @@ export function ArchiveView() {
   useEffect(() => {
     setCurrentPage(1);
   }, [activeCategory, pageSize, query]);
+
+  useEffect(() => {
+    if (!isFirebaseBackend || !auth) {
+      setAuthLoading(false);
+      return undefined;
+    }
+
+    return onAuthStateChanged(auth, (nextUser) => {
+      setAuthUser(nextUser);
+      setAuthLoading(false);
+    });
+  }, [isFirebaseBackend]);
+
+  async function handleLogin(event) {
+    event.preventDefault();
+    if (!auth) {
+      setUploadStatus('Firebase 인증 설정 후 로그인할 수 있습니다.');
+      return;
+    }
+
+    setUploadStatus('');
+    try {
+      await signInWithEmailAndPassword(auth, email.trim(), password);
+      setPassword('');
+    } catch (nextError) {
+      setUploadStatus(nextError.message || '로그인에 실패했습니다.');
+    }
+  }
+
+  async function handleLogout() {
+    sessionStorage.removeItem(unlockSessionKey);
+    setIsUnlocked(false);
+    setAuthUser(null);
+    if (auth) {
+      await signOut(auth);
+    }
+  }
 
   function handleUnlock(event) {
     event.preventDefault();
@@ -135,7 +181,40 @@ export function ArchiveView() {
     }
   }
 
-  if (!isUnlocked) {
+  if (isFirebaseBackend && (authLoading || !authUser)) {
+    return (
+      <main className="auth-shell">
+        <form className="pin-panel" onSubmit={handleLogin}>
+          <p className="eyebrow">Archive Store</p>
+          <h1>로그인</h1>
+          {authLoading && <p className="auth-note">Firebase 인증 상태를 확인하고 있습니다.</p>}
+          <label>
+            <span>이메일</span>
+            <input
+              autoComplete="email"
+              autoFocus
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </label>
+          <label>
+            <span>비밀번호</span>
+            <input
+              autoComplete="current-password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </label>
+          <button type="submit" disabled={authLoading}>열기</button>
+          {uploadStatus && <p className="pin-error">{uploadStatus}</p>}
+        </form>
+      </main>
+    );
+  }
+
+  if (!isFirebaseBackend && !isUnlocked) {
     return (
       <main className="auth-shell">
         <form className="pin-panel" onSubmit={handleUnlock}>
@@ -166,6 +245,14 @@ export function ArchiveView() {
           <p className="eyebrow">Archive Store</p>
           <h1>개인용 아카이브 저장소</h1>
         </div>
+        {isFirebaseBackend && (
+          <div className="toolbar-actions">
+            <span>{authUser.email}</span>
+            <button className="icon-button" type="button" onClick={handleLogout} title="로그아웃">
+              <LogOut size={18} aria-hidden="true" />
+            </button>
+          </div>
+        )}
       </section>
 
       <section className="workspace-layout">

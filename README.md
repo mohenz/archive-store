@@ -5,7 +5,8 @@ Firebase 기반 개인용 아카이브 저장소입니다.
 ## 현재 범위
 - React/Vite 프론트엔드 스캐폴딩
 - Firebase Auth, Firestore, Storage 클라이언트 연동 구조
-- 단일 사용자 PIN 잠금 화면
+- Firebase 백엔드 모드의 이메일/비밀번호 로그인 화면
+- 로컬 API 모드의 단일 사용자 PIN 잠금 화면
 - 파일 선택/드래그 앤 드롭/클립보드 업로드 UI 골격
 - 200MB 단일 파일 제한, 1GB 총량 표시, 실행파일 차단
 - 파일 타입 필터, 검색, 저장소 사용량 패널, 미리보기 모달 골격
@@ -14,8 +15,9 @@ Firebase 기반 개인용 아카이브 저장소입니다.
 ## 시작 전 준비
 1. Firebase 프로젝트 `archive-store-fae71`을 사용합니다.
 2. Web App을 추가하고 Firebase config 값을 확인합니다.
-3. 로컬 API 기준은 `config\.env.example`, Firebase 기준은 `config\.env.firebase.example`을 복사해 `.env.local`을 생성하고 `VITE_ARCHIVE_PIN`을 설정합니다.
-4. Cloud Firestore, Firebase Storage를 활성화합니다.
+3. Firebase Authentication에서 Email/Password 제공업체를 활성화하고 운영 계정을 생성합니다.
+4. 로컬 API 기준은 `config\.env.example`, Firebase 기준은 `config\.env.firebase.example`을 복사해 `.env.local`을 생성합니다.
+5. Cloud Firestore, Firebase Storage를 활성화합니다.
 
 ## 실행
 간단 실행:
