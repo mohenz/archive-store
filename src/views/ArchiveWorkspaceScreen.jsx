@@ -1,4 +1,5 @@
-import { File, FileQuestion, FileText, Grid2X2, Image, Layers, LogOut, Search, Trash2, UploadCloud } from 'lucide-react';
+import { useState } from 'react';
+import { File, FileQuestion, FileText, Grid2X2, Image, Layers, LogOut, Search, Trash2, UploadCloud, List, LayoutGrid } from 'lucide-react';
 import { archivePolicy } from '../config/archivePolicy.js';
 import { formatBytes, getFileInitial } from '../core/fileTypes.js';
 import { FilePreviewModal } from './FilePreviewModal.jsx';
@@ -56,6 +57,8 @@ export function ArchiveWorkspaceScreen({
   usedRatio,
   visibleFiles,
 }) {
+  const [viewMode, setViewMode] = useState('list');
+
   return (
     <main className="app-shell" onPaste={onPaste}>
       <section className="toolbar">
@@ -115,6 +118,14 @@ export function ArchiveWorkspaceScreen({
                 </button>
               ))}
             </div>
+            <div className="view-mode-toggle" aria-label="보기 방식 선택">
+              <button className={viewMode === 'list' ? 'active' : ''} type="button" onClick={() => setViewMode('list')} title="리스트형 보기">
+                <List size={18} aria-hidden="true" />
+              </button>
+              <button className={viewMode === 'card' ? 'active' : ''} type="button" onClick={() => setViewMode('card')} title="카드형 보기">
+                <LayoutGrid size={18} aria-hidden="true" />
+              </button>
+            </div>
             <label className="search-box">
               <Search size={18} aria-hidden="true" />
               <input value={query} onChange={(event) => onQueryChange(event.target.value)} placeholder="파일명 검색" />
@@ -171,29 +182,66 @@ export function ArchiveWorkspaceScreen({
             </label>
           </section>
 
-          <section className="file-list" aria-label="파일 목록">
-            {visibleFiles.map((file) => {
-              const FileIcon = fileCategoryIcons[file.category] ?? fileCategoryIcons.other;
-              return (
-                <div className="file-row" key={file.id}>
-                  <input
-                    aria-label={`${file.filename} 선택`}
-                    checked={selectedIds.has(file.id)}
-                    type="checkbox"
-                    onChange={() => onToggleSelected(file.id)}
-                  />
-                  <button className="file-open" type="button" onClick={() => onSelectedFileChange(file)}>
-                    <span className={`file-badge ${file.category}`} aria-label={getFileInitial(file.category)} title={getFileInitial(file.category)}>
-                      <FileIcon size={18} aria-hidden="true" />
-                    </span>
-                    <strong>{file.filename}</strong>
-                    <span className="file-mime">{file.mimeType || '-'}</span>
-                    <small>{formatBytes(file.size)}</small>
-                  </button>
-                </div>
-              );
-            })}
-          </section>
+          {viewMode === 'list' ? (
+            <section className="file-list" aria-label="파일 목록">
+              {visibleFiles.map((file) => {
+                const FileIcon = fileCategoryIcons[file.category] ?? fileCategoryIcons.other;
+                return (
+                  <div className="file-row" key={file.id}>
+                    <input
+                      aria-label={`${file.filename} 선택`}
+                      checked={selectedIds.has(file.id)}
+                      type="checkbox"
+                      onChange={() => onToggleSelected(file.id)}
+                    />
+                    <button className="file-open" type="button" onClick={() => onSelectedFileChange(file)}>
+                      <span className={`file-badge ${file.category}`} aria-label={getFileInitial(file.category)} title={getFileInitial(file.category)}>
+                        <FileIcon size={18} aria-hidden="true" />
+                      </span>
+                      <strong>{file.filename}</strong>
+                      <span className="file-mime">{file.mimeType || '-'}</span>
+                      <small>{formatBytes(file.size)}</small>
+                    </button>
+                  </div>
+                );
+              })}
+            </section>
+          ) : (
+            <section className="file-card-grid" aria-label="파일 카드형 목록">
+              {visibleFiles.map((file) => {
+                const FileIcon = fileCategoryIcons[file.category] ?? fileCategoryIcons.other;
+                return (
+                  <div className="file-card" key={file.id}>
+                    <input
+                      className="card-checkbox"
+                      aria-label={`${file.filename} 선택`}
+                      checked={selectedIds.has(file.id)}
+                      type="checkbox"
+                      onChange={() => onToggleSelected(file.id)}
+                    />
+                    <button className="card-click-area" type="button" onClick={() => onSelectedFileChange(file)}>
+                      <div className="card-preview">
+                        {file.category === 'image' && file.publicUrl ? (
+                          <img src={file.publicUrl} alt={file.filename} loading="lazy" />
+                        ) : (
+                          <span className={`file-badge ${file.category}`} aria-label={getFileInitial(file.category)} title={getFileInitial(file.category)}>
+                            <FileIcon size={24} aria-hidden="true" />
+                          </span>
+                        )}
+                      </div>
+                      <div className="card-info">
+                        <strong className="card-filename" title={file.filename}>{file.filename}</strong>
+                        <div className="card-meta">
+                          <span className="card-type-badge">{file.mimeType ? file.mimeType.split('/')[1] : file.category}</span>
+                          <span className="card-size">{formatBytes(file.size)}</span>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                );
+              })}
+            </section>
+          )}
 
           <nav className="pagination" aria-label="파일 목록 페이지">
             <button type="button" disabled={currentPage <= 1} onClick={() => onPageChange((page) => Math.max(page - 1, 1))}>
