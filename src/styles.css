@@ -1443,3 +1443,21 @@ h1 {
 [data-theme='dark'] .category-tabs button.tab-text:hover:not(.active) { background: #451a03; color: #cbd5e1; }
 [data-theme='dark'] .category-tabs button.tab-document:hover:not(.active) { background: #082f49; color: #cbd5e1; }
 [data-theme='dark'] .category-tabs button.tab-other:hover:not(.active) { background: #500724; color: #cbd5e1; }
+
+/* File List Row & Button Dark Mode Fix */
+[data-theme='dark'] .file-row {
+  background-color: #141b2d;
+  border-color: #222e47;
+}
+
+[data-theme='dark'] .file-row:hover {
+  background-color: #222e47;
+}
+
+[data-theme='dark'] .file-open {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .file-open strong {
+  color: #f1f5f9;
+}
