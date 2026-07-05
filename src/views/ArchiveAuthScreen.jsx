@@ -1,3 +1,5 @@
+import { Sun, Moon } from 'lucide-react';
+
 export function ArchiveAuthScreen({
   authLoading,
   email,
@@ -19,10 +21,18 @@ export function ArchiveAuthScreen({
   resetStatus,
   status,
   type,
+  theme,
+  onThemeToggle,
 }) {
+  const themeButton = (
+    <button className="icon-button auth-theme-toggle" type="button" onClick={onThemeToggle} title={theme === 'light' ? '어둡게 보기' : '밝게 보기'}>
+      {theme === 'light' ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
+    </button>
+  );
   if (type === 'reset') {
     return (
       <main className="auth-shell">
+        {themeButton}
         <form className="auth-panel" onSubmit={onPasswordReset}>
           <h1>비밀번호 재설정</h1>
           <p className="auth-note">가입된 이메일 주소로 재설정 링크를 전송합니다.</p>
@@ -49,6 +59,7 @@ export function ArchiveAuthScreen({
   if (type === 'firebase') {
     return (
       <main className="auth-shell">
+        {themeButton}
         <form className="auth-panel" onSubmit={onLogin}>
           <h1>계정 로그인</h1>
           <p className="auth-note">Firebase 계정으로 개인 자료실에 접속합니다.</p>
@@ -92,6 +103,7 @@ export function ArchiveAuthScreen({
 
   return (
     <main className="auth-shell">
+      {themeButton}
       <form className="pin-panel" onSubmit={onUnlock}>
         <h1>PIN 인증</h1>
         <label>

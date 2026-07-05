@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { archivePolicy } from '../config/archivePolicy.js';
 import { getEnv } from '../core/env.js';
 import { useArchiveAuth } from '../features/archive/useArchiveAuth.js';
@@ -11,6 +12,16 @@ export function ArchiveView() {
   const rawBackend = getEnv('VITE_DATA_BACKEND') || 'local-api';
   const dataBackend = String(rawBackend).trim().replace(/^\uFEFF/g, '');
   const authState = useArchiveAuth({ dataBackend });
+  const [theme, setTheme] = useState(() => localStorage.getItem('archive-theme') || 'light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('archive-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
   const { files, setFiles, usedBytes, loading, error, firebaseReady } = useArchiveFiles(authState.userId);
   const listState = useArchiveListControls(files);
   const usedRatio = Math.min((usedBytes / archivePolicy.storageLimitBytes) * 100, 100);
@@ -51,6 +62,8 @@ export function ArchiveView() {
         resetStatus={authState.resetStatus}
         status={authState.authStatus}
         type={authState.screenType}
+        theme={theme}
+        onThemeToggle={toggleTheme}
       />
     );
   }
@@ -91,6 +104,8 @@ export function ArchiveView() {
       usedBytes={usedBytes}
       usedRatio={usedRatio}
       visibleFiles={listState.visibleFiles}
+      theme={theme}
+      onThemeToggle={toggleTheme}
     />
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { File, FileQuestion, FileText, Grid2X2, Image, Layers, LogOut, Search, Trash2, UploadCloud, List, LayoutGrid } from 'lucide-react';
+import { File, FileQuestion, FileText, Grid2X2, Image, Layers, LogOut, Search, Trash2, UploadCloud, List, LayoutGrid, Sun, Moon } from 'lucide-react';
 import { archivePolicy } from '../config/archivePolicy.js';
 import { formatBytes, getFileInitial } from '../core/fileTypes.js';
 import { FilePreviewModal } from './FilePreviewModal.jsx';
@@ -56,6 +56,8 @@ export function ArchiveWorkspaceScreen({
   usedBytes,
   usedRatio,
   visibleFiles,
+  theme,
+  onThemeToggle,
 }) {
   const [viewMode, setViewMode] = useState('list');
 
@@ -65,14 +67,19 @@ export function ArchiveWorkspaceScreen({
         <div>
           <h1>자료실</h1>
         </div>
-        {isFirebaseBackend && (
-          <div className="toolbar-actions">
-            <span>{authUser.email}</span>
-            <button className="icon-button" type="button" onClick={onLogout} title="로그아웃">
-              <LogOut size={18} aria-hidden="true" />
-            </button>
-          </div>
-        )}
+        <div className="toolbar-actions">
+          <button className="icon-button theme-toggle" type="button" onClick={onThemeToggle} title={theme === 'light' ? '어둡게 보기' : '밝게 보기'}>
+            {theme === 'light' ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
+          </button>
+          {isFirebaseBackend && authUser && (
+            <>
+              <span>{authUser.email}</span>
+              <button className="icon-button" type="button" onClick={onLogout} title="로그아웃">
+                <LogOut size={18} aria-hidden="true" />
+              </button>
+            </>
+          )}
+        </div>
       </section>
 
       <section className="workspace-layout">
