@@ -221,8 +221,8 @@ export function ArchiveWorkspaceScreen({
                     />
                     <button className="card-click-area" type="button" onClick={() => onSelectedFileChange(file)}>
                       <div className="card-preview">
-                        {file.category === 'image' && file.publicUrl ? (
-                          <img src={file.publicUrl} alt={file.filename} loading="lazy" />
+                        {file.category === 'image' && file.downloadUrl ? (
+                          <img src={file.downloadUrl} alt={file.filename} loading="lazy" />
                         ) : (
                           <span className={`file-badge ${file.category}`} aria-label={getFileInitial(file.category)} title={getFileInitial(file.category)}>
                             <FileIcon size={24} aria-hidden="true" />
